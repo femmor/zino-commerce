@@ -1,16 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Pages
-import Home from './pages/home/Home';
-import Admin from './pages/admin/Admin';
-import OrderHistory from './pages/orderHistory/OrderHistory';
-import Contact from './pages/contact/Contact';
-import Cart from './pages/cart/Cart';
-import NotFound from './pages/not-found/NotFound';
+import { Home, Admin, OrderHistory, Contact, Cart, NotFound } from './pages';
 
 // Components
-import Header from './components/header/Header';
-import Footer from './components/footer/Footer';
+import { Header, Footer } from './components';
 
 const App = () => {
   return (
