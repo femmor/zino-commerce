@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Header.module.scss';
-import { FaShoppingCart } from 'react-icons/fa';
+import { FaShoppingCart, FaTimes } from 'react-icons/fa';
+import { HiOutlineMenuAlt3 } from 'react-icons/hi';
 
 const logo = (
   <div className={styles.logo}>
@@ -22,11 +24,36 @@ const cart = (
 );
 
 const Header = () => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  // Toggle mobile menu
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
+
+  const hideMenu = () => {
+    setShowMenu(false);
+  };
+
   return (
     <header className={styles.header}>
       {logo}
-      <nav>
-        <ul>
+      <nav
+        className={showMenu ? `${styles['show-nav']}` : `${styles['hide-nav']}`}
+      >
+        <div
+          className={
+            showMenu
+              ? `${styles['nav-wrapper']} ${styles['show-nav-wrapper']}`
+              : `${styles['nav-wrapper']}`
+          }
+          onClick={hideMenu}
+        ></div>
+        <ul onClick={hideMenu}>
+          <li className={styles['logo-mobile']}>
+            {logo}
+            <FaTimes size={22} color="#fff" onClick={hideMenu} />
+          </li>
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -34,7 +61,7 @@ const Header = () => {
             <Link to="/contact">Contact Us</Link>
           </li>
         </ul>
-        <div className={styles['header-right']}>
+        <div className={styles['header-right']} onClick={hideMenu}>
           <span className={styles.links}>
             <Link to="/login">Login</Link>
             <Link to="/register">Register</Link>
@@ -43,6 +70,11 @@ const Header = () => {
           {cart}
         </div>
       </nav>
+
+      <div className={styles['menu-icon']}>
+        {cart}
+        <HiOutlineMenuAlt3 size={28} onClick={toggleMenu} />
+      </div>
     </header>
   );
 };
