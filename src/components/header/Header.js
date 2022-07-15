@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styles from './Header.module.scss';
-import { FaShoppingCart, FaTimes } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 import { HiOutlineMenuAlt3 } from 'react-icons/hi';
 import { logo, cart, activeLink } from '../../helpers/headerHelpers';
 
