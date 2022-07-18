@@ -6,7 +6,7 @@ import { FaGoogle } from 'react-icons/fa';
 import Card from '../../components/card/Card';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase/config';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import Loader from '../../components/loader/Loader';
 
@@ -36,7 +36,6 @@ const Login = () => {
 
   return (
     <>
-      <ToastContainer />
       {isLoading && <Loader />}
       <section className={`container ${styles.auth}`}>
         <div className={styles.img}>

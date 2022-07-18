@@ -8,7 +8,7 @@ import Card from '../../components/card/Card';
 import Loader from '../../components/loader/Loader';
 import { useNavigate } from 'react-router-dom';
 
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -44,7 +44,6 @@ const Register = () => {
 
   return (
     <>
-      <ToastContainer />
       {isLoading && <Loader />}
       <section className={`container ${styles.auth}`}>
         <Card>
