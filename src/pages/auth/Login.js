@@ -4,7 +4,11 @@ import loginImg from '../../assets/login.png';
 import styles from './Auth.module.scss';
 import { FaGoogle } from 'react-icons/fa';
 import Card from '../../components/card/Card';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from 'firebase/auth';
 import { auth } from '../../firebase/config';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +21,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  // Sign in with email and password
   const loginUser = e => {
     e.preventDefault();
     setIsLoading(true);
@@ -32,6 +37,24 @@ const Login = () => {
         setIsLoading(false);
         toast.error('Error: ' + error.message);
       });
+  };
+
+  // Sign in with Google
+  const signInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+
+    setIsLoading(true);
+
+    try {
+      const user = result.user;
+      setIsLoading(false);
+      toast.success('User logged in successfully.');
+      navigate('/');
+    } catch (error) {
+      setIsLoading(false);
+      toast.error('Error: ' + error.message);
+    }
   };
 
   return (
@@ -68,7 +91,11 @@ const Login = () => {
               <p>-- or --</p>
             </form>
 
-            <button className="--btn --btn-danger --btn-block" type="submit">
+            <button
+              className="--btn --btn-danger --btn-block"
+              type="submit"
+              onClick={signInWithGoogle}
+            >
               <FaGoogle
                 color="#fff"
                 style={{
