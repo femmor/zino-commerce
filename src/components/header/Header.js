@@ -9,10 +9,15 @@ import { toast } from 'react-toastify';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../../firebase/config';
 
+import { useDispatch } from 'react-redux';
+import { SET_ACTIVE_USER } from '../../store/features/authSlice';
+
 const Header = () => {
   const [displayName, setDisplayName] = useState('');
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
 
   // Toggle mobile menu
   const toggleMenu = () => {
@@ -40,8 +45,15 @@ const Header = () => {
       auth,
       user => {
         if (user) {
-          const uid = user.uid;
           setDisplayName(user.displayName);
+
+          dispatch(
+            SET_ACTIVE_USER({
+              email: user.email,
+              userName: user.displayName,
+              userId: user.uid,
+            })
+          );
         } else {
           setDisplayName('');
         }
