@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FaArrowCircleLeft, FaArrowCircleRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { sliderData } from '../../slider-data';
@@ -7,13 +7,13 @@ import './Slider.scss';
 const Slider = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentSlide === sliderData.length - 1) {
       setCurrentSlide(0);
     } else {
       setCurrentSlide(currentSlide + 1);
     }
-  };
+  });
 
   const handlePrev = () => {
     if (currentSlide === 0) {
@@ -22,6 +22,13 @@ const Slider = () => {
       setCurrentSlide(currentSlide - 1);
     }
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [handleNext]);
 
   return (
     <div className="slider">
