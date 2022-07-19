@@ -45,12 +45,21 @@ const Header = () => {
       auth,
       user => {
         if (user) {
-          setDisplayName(user.displayName);
+          if (user.displayName === null) {
+            // get username from email
+            const username = user.email.split('@')[0];
+            // convert the first char in username to uppercase
+            const newUsername =
+              username.charAt(0).toUpperCase() + username.slice(1);
+            setDisplayName(newUsername);
+          } else {
+            setDisplayName(user.displayName);
+          }
 
           dispatch(
             SET_ACTIVE_USER({
               email: user.email,
-              userName: user.displayName,
+              userName: user.displayName ? user.displayName : displayName,
               userId: user.uid,
             })
           );
