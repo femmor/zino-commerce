@@ -28,7 +28,7 @@ const Login = () => {
 
     signInWithEmailAndPassword(auth, email, password)
       .then(userCredential => {
-        const user = userCredential.user;
+        // const user = userCredential.user;
         setIsLoading(false);
         toast.success('User logged in successfully.');
         navigate('/');
@@ -42,12 +42,11 @@ const Login = () => {
   // Sign in with Google
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup(auth, provider);
+    await signInWithPopup(auth, provider);
 
     setIsLoading(true);
 
     try {
-      const user = result.user;
       setIsLoading(false);
       toast.success('User logged in successfully.');
       navigate('/');

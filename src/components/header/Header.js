@@ -10,7 +10,10 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../../firebase/config';
 
 import { useDispatch } from 'react-redux';
-import { SET_ACTIVE_USER } from '../../store/features/authSlice';
+import {
+  SET_ACTIVE_USER,
+  REMOVE_ACTIVE_USER,
+} from '../../store/features/authSlice';
 
 const Header = () => {
   const [displayName, setDisplayName] = useState('');
@@ -65,6 +68,7 @@ const Header = () => {
           );
         } else {
           setDisplayName('');
+          dispatch(REMOVE_ACTIVE_USER());
         }
       },
       []
