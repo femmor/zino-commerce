@@ -14,6 +14,7 @@ import {
   SET_ACTIVE_USER,
   REMOVE_ACTIVE_USER,
 } from '../../store/features/authSlice';
+import { ShowOnLogin, ShowOnLogout } from '../hiddenLink/hiddenLink';
 
 const Header = () => {
   const [displayName, setDisplayName] = useState('');
@@ -71,7 +72,7 @@ const Header = () => {
           dispatch(REMOVE_ACTIVE_USER());
         }
       },
-      []
+      [displayName, dispatch]
     );
   });
 
@@ -110,30 +111,31 @@ const Header = () => {
           </ul>
           <div className={styles['header-right']} onClick={hideMenu}>
             <span className={styles.links}>
-              {displayName ? (
-                <>
-                  <Link to="#">
-                    <FaUserCircle size={16} /> Hi!, {displayName}
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <NavLink className={activeLink} to="/login">
-                    Login
-                  </NavLink>
-                  <NavLink className={activeLink} to="/register">
-                    Register
-                  </NavLink>
-                </>
-              )}
-              <NavLink className={activeLink} to="/order-history">
-                My Orders
-              </NavLink>
-              {displayName && (
+              <ShowOnLogout>
+                <NavLink className={activeLink} to="/login">
+                  Login
+                </NavLink>
+              </ShowOnLogout>
+              <ShowOnLogin>
+                <Link
+                  to="#"
+                  style={{
+                    color: '#ff7722',
+                  }}
+                >
+                  <FaUserCircle size={16} /> Hi, {displayName}
+                </Link>
+              </ShowOnLogin>
+              <ShowOnLogin>
+                <NavLink className={activeLink} to="/order-history">
+                  Your Orders
+                </NavLink>
+              </ShowOnLogin>
+              <ShowOnLogin>
                 <NavLink onClick={logoutUser} to="/">
                   Log Out
                 </NavLink>
-              )}
+              </ShowOnLogin>
             </span>
             {cart}
           </div>
