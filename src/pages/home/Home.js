@@ -4,7 +4,8 @@ import './Home.module.scss';
 const Home = () => {
   return (
     <div>
-      <Slider />
+      <h1>Home page</h1>
+      {/* <Slider /> */}
     </div>
   );
 };

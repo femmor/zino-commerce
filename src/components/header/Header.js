@@ -15,6 +15,7 @@ import {
   REMOVE_ACTIVE_USER,
 } from '../../store/features/authSlice';
 import { ShowOnLogin, ShowOnLogout } from '../hiddenLink/hiddenLink';
+import AdminRoute from '../adminRoute/AdminRoute';
 
 const Header = () => {
   const [displayName, setDisplayName] = useState('');
@@ -97,6 +98,15 @@ const Header = () => {
             <li className={styles['logo-mobile']}>
               {logo}
               <FaTimes size={22} color="#fff" onClick={hideMenu} />
+            </li>
+            <li>
+              {
+                <AdminRoute>
+                  <NavLink className="--btn --btn-primary" to="/admin">
+                    Admin
+                  </NavLink>
+                </AdminRoute>
+              }
             </li>
             <li>
               <NavLink className={activeLink} to="/">
