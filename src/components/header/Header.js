@@ -15,7 +15,7 @@ import {
   REMOVE_ACTIVE_USER,
 } from '../../store/features/authSlice';
 import { ShowOnLogin, ShowOnLogout } from '../hiddenLink/hiddenLink';
-import AdminRoute from '../adminRoute/AdminRoute';
+import AdminRoute, { AdminOnlyLink } from '../adminRoute/AdminRoute';
 
 const Header = () => {
   const [displayName, setDisplayName] = useState('');
@@ -101,11 +101,11 @@ const Header = () => {
             </li>
             <li>
               {
-                <AdminRoute>
-                  <NavLink className="--btn --btn-primary" to="/admin">
+                <AdminOnlyLink>
+                  <NavLink className="--btn --btn-primary" to="/admin/home">
                     Admin
                   </NavLink>
-                </AdminRoute>
+                </AdminOnlyLink>
               }
             </li>
             <li>
