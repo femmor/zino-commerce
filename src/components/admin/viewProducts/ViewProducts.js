@@ -1,4 +1,4 @@
 const ViewProducts = () => {
-  return <div>ViewProducts</div>;
+  return <h1>View Products</h1>;
 };
 export default ViewProducts;

@@ -16,6 +16,7 @@ import {
 
 // Components
 import { Header, Footer } from './components';
+import AdminRoute from './components/adminRoute/AdminRoute';
 
 const App = () => {
   return (
@@ -32,6 +33,14 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route
+          path="/admin/*"
+          element={
+            <AdminRoute>
+              <Admin />
+            </AdminRoute>
+          }
+        />
       </Routes>
       <Footer />
     </Router>
