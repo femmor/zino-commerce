@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import Card from '../../../components/card/Card';
-import { ref, uploadBytesResumable } from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../../firebase/config';
+import { toast } from 'react-toastify';
 
 import styles from './AddProduct.module.scss';
 
@@ -34,6 +35,8 @@ const AddProducts = () => {
     description: '',
   });
 
+  const [uploadProgress, setUploadProgress] = useState(0);
+
   const handleInputChange = e => {
     const { name, value } = e.target;
     setProduct({
@@ -50,7 +53,26 @@ const AddProducts = () => {
     );
 
     const uploadImage = uploadBytesResumable(storageRef, file);
-    console.log(uploadImage);
+    uploadImage.on(
+      'state_changed',
+      snapshot => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setUploadProgress(progress);
+      },
+      error => {
+        toast.error(error.message);
+      },
+      () => {
+        getDownloadURL(uploadImage.snapshot.ref).then(downloadURL => {
+          setProduct({
+            ...product,
+            imageURL: downloadURL,
+          });
+          toast.success('Image uploaded successfully');
+        });
+      }
+    );
   };
 
   const addProduct = e => {
@@ -76,14 +98,18 @@ const AddProducts = () => {
           <label htmlFor="productImage">Product Image:</label>
           <Card className={styles.group}>
             <div className={styles.progress}>
-              <div
-                className={styles['progress-bar']}
-                style={{
-                  width: '50%',
-                }}
-              >
-                Uploading 50%
-              </div>
+              {uploadProgress !== 0 && (
+                <div
+                  className={styles['progress-bar']}
+                  style={{
+                    width: `${uploadProgress}%`,
+                  }}
+                >
+                  {uploadProgress < 100
+                    ? `Uploading... ${uploadProgress}%`
+                    : `Upload complete - ${uploadProgress}%`}
+                </div>
+              )}
             </div>
             <input
               type="file"
@@ -92,13 +118,15 @@ const AddProducts = () => {
               onChange={e => handleImageChange(e)}
               placeholder="Product image"
             />
-            <input
-              type="text"
-              name="imageUrl"
-              value={product.imageURL}
-              required
-              disabled
-            />
+            {product.imageURL && (
+              <input
+                type="text"
+                name="imageUrl"
+                value={product.imageURL}
+                required
+                disabled
+              />
+            )}
           </Card>
           <label htmlFor="price">Product Price:</label>
           <input
