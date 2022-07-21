@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import Card from '../../../components/card/Card';
+import { ref, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '../../../firebase/config';
 
 import styles from './AddProduct.module.scss';
 
@@ -33,8 +35,7 @@ const AddProducts = () => {
   });
 
   const handleInputChange = e => {
-    const name = e.target.name;
-    const value = e.target.value;
+    const { name, value } = e.target;
     setProduct({
       ...product,
       [name]: value,
@@ -42,17 +43,26 @@ const AddProducts = () => {
   };
 
   const handleImageChange = e => {
-    setProduct({
-      ...product,
-      imageURL: e.target.files[0],
-    });
+    const file = e.target.files[0];
+    const storageRef = ref(
+      storage,
+      `zcommerce-uploads/${Date.now()}${file.name}`
+    );
+
+    const uploadImage = uploadBytesResumable(storageRef, file);
+    console.log(uploadImage);
+  };
+
+  const addProduct = e => {
+    e.preventDefault();
+    console.log(product);
   };
 
   return (
     <div className={styles.product}>
       <h1>Add New Product</h1>
       <Card className={styles.card}>
-        <form>
+        <form onSubmit={addProduct}>
           <label htmlFor="name">Product Name:</label>
           <input
             type="text"
