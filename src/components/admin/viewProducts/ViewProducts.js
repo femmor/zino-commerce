@@ -5,14 +5,17 @@ import {
   orderBy,
   query,
   onSnapshot,
+  doc,
+  deleteDoc,
 } from 'firebase/firestore';
-import { db } from '../../../firebase/config';
+import { db, storage } from '../../../firebase/config';
 import styles from './ViewProducts.module.scss';
 import Loader from '../../../components/loader/Loader';
 import { toast } from 'react-toastify';
 
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { deleteObject, ref } from 'firebase/storage';
 
 const ViewProducts = () => {
   const [products, setProducts] = useState([]);
@@ -45,6 +48,21 @@ const ViewProducts = () => {
   useEffect(() => {
     getProducts();
   }, []);
+
+  const deleteProduct = async (id, imageURL) => {
+    try {
+      // Delete product
+      await deleteDoc(doc(db, 'products', id));
+
+      // Delete product image
+      const imageRef = ref(storage, imageURL);
+      await deleteObject(imageRef);
+
+      toast.success('Product deleted successfully');
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
     <>
@@ -84,12 +102,16 @@ const ViewProducts = () => {
                     <td>{name}</td>
                     <td>{category}</td>
                     <td>${price}</td>
-                    <td>
+                    <td className={styles.icons}>
                       <Link to="/admin/add-product">
                         <FaEdit size={20} color="green" />
                       </Link>
                       &nbsp;
-                      <FaTrashAlt size={19} color="red" />
+                      <FaTrashAlt
+                        size={19}
+                        color="red"
+                        onClick={() => deleteProduct(id, imageURL)}
+                      />
                     </td>
                   </tr>
                 </tbody>
