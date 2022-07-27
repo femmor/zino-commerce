@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { STORE_PRODUCTS } from '../../../store/features/productSlice';
 import {
-  getDocs,
   collection,
   orderBy,
   query,
@@ -23,6 +24,8 @@ const ViewProducts = () => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const dispatch = useDispatch();
+
   const getProducts = () => {
     setIsLoading(true);
 
@@ -39,6 +42,11 @@ const ViewProducts = () => {
         });
 
         setProducts(allProducts);
+        dispatch(
+          STORE_PRODUCTS({
+            products: allProducts,
+          })
+        );
         setIsLoading(false);
       });
     } catch (error) {
