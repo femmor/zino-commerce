@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectProducts } from '../../../store/features/productSlice';
 import Card from '../../../components/card/Card';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { db, storage } from '../../../firebase/config';
 import { toast } from 'react-toastify';
 import Loader from '../../../components/loader/Loader';
-import { useNavigate } from 'react-router-dom';
 
 import styles from './AddProduct.module.scss';
 import { addDoc, collection, Timestamp } from 'firebase/firestore';
@@ -38,12 +40,28 @@ const initialState = {
 };
 
 const AddProducts = () => {
-  const [product, setProduct] = useState({ ...initialState });
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  // Detect if the user is editing a product or adding a new product
+  const detectForm = (id, arg1, arg2) => {
+    if (id === 'ADD') {
+      return arg1;
+    } else {
+      return arg2;
+    }
+  };
+
+  const products = useSelector(selectProducts);
+  const productEdit = products.find(item => item.id === id);
+
+  const [product, setProduct] = useState(() => {
+    const newState = detectForm(id, { ...initialState }, productEdit);
+    return newState;
+  });
 
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isLoading, setIsloading] = useState(false);
-
-  const navigate = useNavigate();
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -77,7 +95,9 @@ const AddProducts = () => {
             ...product,
             imageURL: downloadURL,
           });
-          toast.success('Image uploaded successfully');
+          toast.success(
+            `Image ${detectForm(id, 'uploaded', 'edited')} successfully`
+          );
         });
       }
     );
@@ -97,7 +117,7 @@ const AddProducts = () => {
         description: product.description,
         createdAt: Timestamp.now().toDate(),
       });
-      toast.success('Product added successfully!');
+      toast.success('Product added successfully');
       setProduct({ ...initialState });
       setUploadProgress(0);
       setIsloading(false);
@@ -108,13 +128,24 @@ const AddProducts = () => {
     }
   };
 
+  const editProduct = async e => {
+    e.preventDefault();
+    setIsloading(true);
+
+    try {
+    } catch (error) {
+      toast.error(error.message);
+      setIsloading(false);
+    }
+  };
+
   return (
     <>
       {isLoading && <Loader />}
       <div className={styles.product}>
-        <h1>Add New Product</h1>
+        <h2>{detectForm(id, 'Add New Product', 'Edit Product')}</h2>
         <Card className={styles.card}>
-          <form onSubmit={addProduct}>
+          <form onSubmit={detectForm(id, addProduct, editProduct)}>
             <label htmlFor="name">Product Name:</label>
             <input
               type="text"
@@ -196,14 +227,18 @@ const AddProducts = () => {
             <textarea
               name="description"
               value={product.description}
-              placeholder="Add a product description"
+              placeholder={`${detectForm(
+                id,
+                'Add a',
+                'Edit'
+              )} product description`}
               onChange={e => handleInputChange(e)}
               cols="30"
               rows="10"
               required
             ></textarea>
             <button type="submit" className="--btn --btn-primary">
-              Add Product
+              {detectForm(id, 'Add Product', 'Edit Product')}
             </button>
           </form>
         </Card>
