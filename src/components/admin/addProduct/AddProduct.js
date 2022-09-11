@@ -3,13 +3,18 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectProducts } from '../../../store/features/productSlice';
 import Card from '../../../components/card/Card';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytesResumable,
+} from 'firebase/storage';
 import { db, storage } from '../../../firebase/config';
 import { toast } from 'react-toastify';
 import Loader from '../../../components/loader/Loader';
 
 import styles from './AddProduct.module.scss';
-import { addDoc, collection, Timestamp } from 'firebase/firestore';
+import { addDoc, setDoc, collection, Timestamp, doc } from 'firebase/firestore';
 
 const categories = [
   {
@@ -61,7 +66,7 @@ const AddProducts = () => {
   });
 
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [isLoading, setIsloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = e => {
     const { name, value } = e.target;
@@ -105,7 +110,7 @@ const AddProducts = () => {
 
   const addProduct = async e => {
     e.preventDefault();
-    setIsloading(true);
+    setIsLoading(true);
 
     try {
       const docRef = await addDoc(collection(db, 'products'), {
@@ -120,22 +125,41 @@ const AddProducts = () => {
       toast.success('Product added successfully');
       setProduct({ ...initialState });
       setUploadProgress(0);
-      setIsloading(false);
+      setIsLoading(false);
       navigate('/admin/view-products');
     } catch (error) {
       toast.error(error.message);
-      setIsloading(false);
+      setIsLoading(false);
     }
   };
 
   const editProduct = async e => {
     e.preventDefault();
-    setIsloading(true);
+    setIsLoading(true);
+
+    if (product.imageURL !== productEdit.imageURL) {
+      // Delete previous product image
+      const previousImageRef = ref(storage, productEdit.imageURL);
+      deleteObject(previousImageRef);
+    }
 
     try {
+      await setDoc(doc(db, 'products', id), {
+        name: product.name,
+        imageURL: product.imageURL,
+        price: Number(product.price),
+        category: product.category,
+        brand: product.brand,
+        description: product.description,
+        createdAt: productEdit.createdAt,
+        editedAt: Timestamp.now().toDate(),
+      });
+      setIsLoading(false);
+      toast.success('Product edited successfully!');
+      navigate('/admin/view-products');
     } catch (error) {
       toast.error(error.message);
-      setIsloading(false);
+      setIsLoading(false);
     }
   };
 
