@@ -1,6 +1,10 @@
-import './ProductFilter.module.scss';
+import styles from './ProductFilter.module.scss';
 
 const ProductFilter = () => {
-  return <div>ProductFilter</div>;
+  return (
+    <div>
+      <h1>Product Filter</h1>
+    </div>
+  );
 };
 export default ProductFilter;

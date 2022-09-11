@@ -1,6 +1,10 @@
-import './ProductList.module.scss';
+import styles from './ProductList.module.scss';
 
 const ProductList = () => {
-  return <div>ProductList</div>;
+  return (
+    <div>
+      <h1>Product List</h1>
+    </div>
+  );
 };
 export default ProductList;

@@ -1,4 +1,4 @@
-import './ProductItem.module.scss';
+import styles from './ProductItem.module.scss';
 
 const ProductItem = () => {
   return <div>ProductItem</div>;
